@@ -19,7 +19,7 @@ def main():
         client_handler.start()
 
 
-def handle_client(client_socket):
+def handle_client(client_socket: socket.socket):
     """
     function to handle request from the client connected, receives data
     from the client and sends example acknowledgement string back to
