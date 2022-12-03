@@ -12,7 +12,7 @@ client = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 client.sendto(b"AAAABBBBCCCC", (target_host, target_port))
 
 # receive data from the server and deconstruct the data and address received
-data, addr = client.recvfrom(4906)
+data, addr = client.recvfrom(4096)
 
 print(data.decode(), addr)
 
