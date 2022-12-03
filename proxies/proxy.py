@@ -1,5 +1,5 @@
-import sys
 import socket
+import sys
 import threading
 
 HEX_FILTER = "".join([(len(repr(chr(i))) == 3) and chr(i) or "." for i in range(256)])
@@ -133,5 +133,6 @@ def main():
 
     server_loop(local_host, local_port, remote_host, remote_port, receive_first)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()

@@ -1,6 +1,6 @@
 import argparse
-import socket
 import shlex
+import socket
 import subprocess
 import sys
 import textwrap
