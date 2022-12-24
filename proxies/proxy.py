@@ -2,10 +2,12 @@ import socket
 import sys
 import threading
 
-HEX_FILTER = "".join([(len(repr(chr(i))) == 3) and chr(i) or "." for i in range(256)])
+HEX_FILTER: str = "".join(
+    [(len(repr(chr(i))) == 3) and chr(i) or "." for i in range(256)]
+)
 
 
-def hexdump(src: bytes, length=16, show=True) -> (list | None):
+def hexdump(src: bytes | str, length=16, show=True) -> (list | None):
     if isinstance(src, bytes):
         src = src.decode()
     results = list()
@@ -51,8 +53,11 @@ def response_handler(buffer: bytes) -> bytes:
 
 
 def proxy_handler(
-    client_socket: socket.socket, remote_host: str, remote_port: int, receive_first
-):
+    client_socket: socket.socket,
+    remote_host: str,
+    remote_port: int,
+    receive_first: bool,
+) -> None:
     remote_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     remote_socket.connect((remote_host, remote_port))
 
@@ -88,7 +93,13 @@ def proxy_handler(
             break
 
 
-def server_loop(local_host, local_port, remote_host, remote_port, receive_first):
+def server_loop(
+    local_host: str,
+    local_port: int,
+    remote_host: str,
+    remote_port: int,
+    receive_first: bool,
+):
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     try:
         server.bind((local_host, local_port))
@@ -102,6 +113,7 @@ def server_loop(local_host, local_port, remote_host, remote_port, receive_first)
     server.listen(5)
     while True:
         client_socket, addr = server.accept()
+        # print out the local connection information
         print("> Received incoming connection from %s:%d" & (addr[0], addr[1]))
 
         proxy_thread = threading.Thread(
@@ -113,7 +125,7 @@ def server_loop(local_host, local_port, remote_host, remote_port, receive_first)
 
 def main():
     if len(sys.argv[1:]) != 5:
-        print("Usage: proxies/proxy.py [localhost] [localport]", end="")
+        print("Usage: proxies/proxy.py [localhost] [localport]", end=" ")
         print("[remotehost] [remoteport] [receive_first]")
         print("Example: proxies/proxy.py 127.0.0.1 9000 172.31.134.104 9000 True")
         sys.exit(0)
