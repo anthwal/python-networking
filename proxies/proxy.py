@@ -114,7 +114,7 @@ def server_loop(
     while True:
         client_socket, addr = server.accept()
         # print out the local connection information
-        print("> Received incoming connection from %s:%d" & (addr[0], addr[1]))
+        print("> Received incoming connection from %s:%d" % (addr[0], addr[1]))
 
         proxy_thread = threading.Thread(
             target=proxy_handler,
