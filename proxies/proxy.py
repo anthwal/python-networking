@@ -1,13 +1,13 @@
-import socket
 import sys
 import threading
+from socket import AF_INET, SOCK_STREAM, socket
 
 HEX_FILTER: str = "".join(
     [(len(repr(chr(i))) == 3) and chr(i) or "." for i in range(256)]
 )
 
 
-def hexdump(src: bytes | str, length=16, show=True) -> (list | None):
+def hexdump(src: bytes | str, length=16, show=True) -> list | None:
     if isinstance(src, bytes):
         src = src.decode()
     results = list()
@@ -24,7 +24,7 @@ def hexdump(src: bytes | str, length=16, show=True) -> (list | None):
         return results
 
 
-def receive_from(connection: socket.socket) -> bytes:
+def receive_from(connection: socket) -> bytes:
     buffer = b""
     connection.settimeout(10)
     try:
@@ -53,12 +53,12 @@ def response_handler(buffer: bytes) -> bytes:
 
 
 def proxy_handler(
-    client_socket: socket.socket,
+    client_socket: socket,
     remote_host: str,
     remote_port: int,
     receive_first: bool,
 ) -> None:
-    remote_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    remote_socket = socket(AF_INET, SOCK_STREAM)
     remote_socket.connect((remote_host, remote_port))
 
     if receive_first:
@@ -100,7 +100,7 @@ def server_loop(
     remote_port: int,
     receive_first: bool,
 ):
-    server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server = socket(AF_INET, SOCK_STREAM)
     try:
         server.bind((local_host, local_port))
     except Exception as e:

@@ -7,7 +7,7 @@ import textwrap
 import threading
 
 
-def execute(cmd: str) -> (str | None):
+def execute(cmd: str) -> str | None:
     """
     executes the command string provided and returns the output string
     """
@@ -76,7 +76,7 @@ class NetCat:
     def handle(self, client_socket: socket.socket):
         if self.args.execute:
             output = execute(self.args.execute)
-            client_socket.send(output.encode())
+            client_socket.send(str(output).encode())
 
         elif self.args.upload:
             file_buffer = b""
