@@ -1,3 +1,5 @@
+"""Simple TCP client"""
+
 from socket import AF_INET, SOCK_STREAM, socket
 
 # host and port to connect to
