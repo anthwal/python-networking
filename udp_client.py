@@ -1,3 +1,5 @@
+"""Simple UDP client"""
+
 from socket import AF_INET, SOCK_DGRAM, socket
 
 # can't find a udp server so using local settings

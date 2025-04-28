@@ -1,3 +1,5 @@
+"""Simple netcat implementation in Python"""
+
 import argparse
 import shlex
 import socket
@@ -13,7 +15,7 @@ def execute(cmd: str) -> str | None:
     """
     cmd = cmd.strip()
     if not cmd:
-        return
+        return None
     output: bytes | str = subprocess.check_output(
         shlex.split(cmd), stderr=subprocess.STDOUT
     )

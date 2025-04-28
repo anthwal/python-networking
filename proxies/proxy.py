@@ -1,6 +1,8 @@
-import sys
-import threading
+"""Simple TCP proxy in Python"""
+
 from socket import AF_INET, SOCK_STREAM, socket
+from sys import argv, exit
+from threading import Thread
 
 HEX_FILTER: str = "".join(
     [(len(repr(chr(i))) == 3) and chr(i) or "." for i in range(256)]
@@ -37,7 +39,6 @@ def receive_from(connection: socket) -> bytes:
 
     except Exception as e:
         print("error ", e)
-        pass
 
     return buffer
 
@@ -107,7 +108,7 @@ def server_loop(
         print("[!!] Failed to listen on %s:%d" % (local_host, local_port))
         print("[!!] Check for other listening sockets or correct permissions.")
         print(e)
-        sys.exit(0)
+        exit(0)
 
     print("[*] Listening on %s:%d" % (local_host, local_port))
     server.listen(5)
@@ -116,7 +117,7 @@ def server_loop(
         # print out the local connection information
         print("> Received incoming connection from %s:%d" % (addr[0], addr[1]))
 
-        proxy_thread = threading.Thread(
+        proxy_thread = Thread(
             target=proxy_handler,
             args=(client_socket, remote_host, remote_port, receive_first),
         )
@@ -124,19 +125,19 @@ def server_loop(
 
 
 def main():
-    if len(sys.argv[1:]) != 5:
+    if len(argv[1:]) != 5:
         print("Usage: proxies/proxy.py [localhost] [localport]", end=" ")
         print("[remotehost] [remoteport] [receive_first]")
         print("Example: proxies/proxy.py 127.0.0.1 9000 172.31.134.104 9000 True")
-        sys.exit(0)
+        exit(0)
 
-    local_host = sys.argv[1]
-    local_port = int(sys.argv[2])
+    local_host = argv[1]
+    local_port = int(argv[2])
 
-    remote_host = sys.argv[3]
-    remote_port = int(sys.argv[4])
+    remote_host = argv[3]
+    remote_port = int(argv[4])
 
-    receive_first = sys.argv[5]
+    receive_first = argv[5]
 
     if "True" in receive_first:
         receive_first = True
