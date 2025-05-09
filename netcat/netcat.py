@@ -35,12 +35,26 @@ class NetCat:
         self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
     def run(self):
+        """
+        Entry point of the program, checks if the program is in listen mode
+        """
         if self.args.listen:
             self.listen()
         else:
             self.send()
 
     def send(self):
+        """
+        Establishes a connection to a target server and port,
+        sends an initial buffer if provided, and
+        facilitates bidirectional communication by receiving
+        data and allowing user input to send messages
+        in an interactive loop.
+
+        Raises:
+            KeyboardInterrupt: Captures user termination to ensure cleanup and graceful exit.
+
+        """
         self.socket.connect((self.args.target, self.args.port))
         if self.buffer:
             self.socket.send(self.buffer)
@@ -66,6 +80,10 @@ class NetCat:
             sys.exit()
 
     def listen(self):
+        """
+        Listens for incoming connection if Program used
+        in listen mode
+        """
         print("listening")
         self.socket.bind((self.args.target, self.args.port))
         self.socket.listen(5)
@@ -76,6 +94,10 @@ class NetCat:
             client_thread.start()
 
     def handle(self, client_socket: socket.socket):
+        """
+        Handler function for incoming types of requests
+        which can be either command shell, upload, or execute
+        """
         if self.args.execute:
             output = execute(self.args.execute)
             client_socket.send(str(output).encode())
@@ -135,11 +157,11 @@ if __name__ == "__main__":
     parser.add_argument("-p", "--port", type=int, default=5555, help="specified port")
     parser.add_argument("-t", "--target", default="192.168.1.203", help="specified IP")
     parser.add_argument("-u", "--upload", help="upload file")
-    args = parser.parse_args()
-    if args.listen:
-        buffer = ""
+    input_args = parser.parse_args()
+    if input_args.listen:
+        BUFFER = ""
     else:
-        buffer = sys.stdin.read()
+        BUFFER = sys.stdin.read()
 
-    nc = NetCat(args, buffer.encode("utf-8"))
+    nc = NetCat(input_args, BUFFER.encode("utf-8"))
     nc.run()
